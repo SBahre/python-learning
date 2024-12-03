@@ -26,7 +26,7 @@ def categorize_rows(df):
 # Function to select between 2 and 5 items from each bucket
 
 
-def select_from_buckets(buckets, number_of_buckets):
+def select_from_buckets(buckets):
     # Iterate number_of_buckets times
     new_buckets = {}
     some_bucket_name = random.choice(list(buckets.keys()))
@@ -35,7 +35,6 @@ def select_from_buckets(buckets, number_of_buckets):
 
     # for i in range(1, number_of_buckets):
     while len(list(buckets.keys())) > 0:
-        print(f'{counter} started.')
         initial_df = pd.DataFrame(columns=cols)
         key_list = list(buckets.keys())
         new_buckets[counter] = []
@@ -66,7 +65,6 @@ def select_from_buckets(buckets, number_of_buckets):
                 break
 
         new_buckets[counter] = initial_df
-        print(f'{counter} completed.')
         counter += 1
 
     for bucket_name in list(buckets.keys()):
@@ -110,17 +108,17 @@ if __name__ == "__main__":
     column_name = 'Language'  # Replace with the column you want to use
 
     # Categorize rows into buckets based on unique values in the column
-    buckets = categorize_by_column(df, column_name)
+    categorized_buckets = categorize_by_column(df, column_name)
     # endregion
 
     # region Count the new number of bins
 
-    row_count = df.shape[0]
-    number_of_buckets = (math.floor(
-        row_count/4)) + (0 if row_count % 4 == 0 else 1)
+    # row_count = df.shape[0]
+    # number_of_buckets = (math.floor(
+    #     row_count/4)) + (0 if row_count % 4 == 0 else 1)
     # endregion
 
-    new_bins = select_from_buckets(buckets, number_of_buckets)
+    new_bins = select_from_buckets(categorized_buckets)
 
     # region Convert dictionary of data frames into an excel file
 
@@ -130,6 +128,6 @@ if __name__ == "__main__":
         df for df in new_bins.values() if isinstance(df, pd.DataFrame)]
 
     dfs = pd.concat(data_frames_list, ignore_index=True)
-    print("Dataframe count after concatination: ", len(dfs))
+    print("Row count after concatenation: ", len(dfs))
     dfs.to_excel('dict1515.xlsx')
     # endregion
